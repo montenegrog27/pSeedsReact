@@ -1,7 +1,7 @@
 export default function Navbar () {
     return (
       <header className="shadow-md">
-        <nav className="container mx-auto p-4 flex justify-between items-center pl-[8%] px-5 md:px-0">
+        <nav className="container mx-auto pt-4 flex justify-between items-center px-5  md:px-20">
           <div className="text-2xl font-bold">
             {/* Logotipo para desktop */}
             <img src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390894/images/Logo_lkdzsg.png" alt="Logotipo de Paradigma Seeds Desktop" className="w-[60%] h-[60%] hidden md:block" />
