@@ -41,11 +41,16 @@ export default function Navbar() {
 
         {/* Sidebar */}
         <div
-          className={`fixed inset-0 bg-black transition-transform duration-300 ease-in-out transform ${
+          className={`fixed inset-0 bg-black transition-transform duration-300 ease-in-out transform  ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           } z-20`}
         >
-          <ul className="flex flex-col items-start ml-10 mt-14 justify-start h-full space-y-4">
+          <div className="flex justify-end p-4">
+            <button onClick={() => setIsMenuOpen(false)} className="text-white text-4xl">
+              &times; {/* X para cerrar */}
+            </button>
+          </div>
+          <ul className="flex flex-col items-start justify-start mt-14 ml-10 h-full space-y-4">
             <li>
               <a
                 href="#nosotros"
