@@ -44,22 +44,23 @@ export default function Nosotros() {
             className="w-full h-auto" // Ajuste de tamaño
           >
             <SwiperSlide>
-              <img
-                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390896/images/PSsinfondo3_wsim2y.png"
+              <img 
+                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395792/images/carrousel2_usirp3.png"
                 alt="Descripción de la imagen"
                 className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>
             <SwiperSlide>
               <img
-                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395792/images/carrousel2_usirp3.png"
+                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395815/images/carrousel1_kyosda.png"
                 alt="Imagen 2"
                 className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>
             <SwiperSlide>
               <img
-                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395815/images/carrousel1_kyosda.png"
+              
+                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390896/images/PSsinfondo3_wsim2y.png"
                 alt="Imagen 3"
                 className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
