@@ -33,43 +33,43 @@ export default function Nosotros() {
       </div>
 
       {/* Contenedor del carrusel y el texto */}
-      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+      <div className="container mx-auto flex flex-col-reverse md:flex-row items-start justify-center gap-8 ">
         {/* Contenedor del carrusel */}
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-[30%] max-w-[400px]"> {/* Más angosto aquí */}
           <Swiper
             spaceBetween={30}
             centeredSlides={true}
             navigation={true} // Habilitar botones de navegación en escritorio
             modules={[Navigation]}
-            className="w-full h-[400px] md:h-[500px]" // Ajuste de tamaño
+            className="w-full h-auto" // Ajuste de tamaño
           >
             <SwiperSlide>
               <img
                 src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390896/images/PSsinfondo3_wsim2y.png"
                 alt="Descripción de la imagen"
-                className="rounded-lg w-full h-auto object-cover"
+                className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>
             <SwiperSlide>
               <img
                 src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395792/images/carrousel2_usirp3.png"
                 alt="Imagen 2"
-                className="rounded-lg w-full h-auto object-cover"
+                className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>
             <SwiperSlide>
               <img
                 src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395815/images/carrousel1_kyosda.png"
                 alt="Imagen 3"
-                className="rounded-lg w-full h-auto object-cover"
+                className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>
           </Swiper>
         </div>
 
         {/* Texto a la derecha */}
-        <div className="w-full md:w-1/2 space-y-2 md:space-y-4">
-          <div className="md:w-[70%] flex-col space-y-10 justify-center items-center md:text-lg">
+        <div className="w-full md:pl-20 md:w-1/2 space-y-2 md:space-y-4 md:mt-20">
+          <div className="md:w-[90%] flex-col space-y-10 justify-center items-center md:text-lg ">
             <p>
               Somos un banco de semillas de cannabis de Corrientes,{" "}
               <strong>
