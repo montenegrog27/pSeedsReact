@@ -1,7 +1,36 @@
-import React from "react";
+import React, { useRef } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
+import emailjs from "emailjs-com";
 
 export default function Contacto() {
+  // Crear referencia para el formulario
+  const form = useRef();
+
+  // Función para enviar el formulario usando EmailJS
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+        "service_nexvm8q", // Reemplaza con tu ID de servicio de EmailJS
+        "template_5gskna8", // Reemplaza con tu ID de plantilla
+        form.current,
+        "AkgJrl-PPGV15mys2"  // Reemplaza con tu ID de usuario de EmailJS
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          alert("¡Mensaje enviado con éxito!");
+        },
+        (error) => {
+          console.log(error.text);
+          alert("Hubo un error al enviar el mensaje.");
+        }
+      );
+
+    e.target.reset(); // Resetea el formulario después de enviarlo
+  };
+
   return (
     <section
       id="contacto"
@@ -45,16 +74,29 @@ export default function Contacto() {
           O deje su mensaje y lo contactaremos a la brevedad
         </p>
 
-        <form className="bg-transparent rounded-3xl w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+        <form
+          ref={form} // Añadir la referencia al formulario
+          onSubmit={sendEmail} // Manejar el evento de envío
+          className="bg-transparent rounded-3xl w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 p-6"
+        >
           <div className="flex flex-col">
             <input
+              type="text"
+              name="user_name" // Añadir el name para EmailJS (campo nombre)
+              placeholder="Nombre y Apellido"
+              className="border bg-transparent border-customYellow rounded w-full p-2 mb-4 placeholder-white"
+              required
+            />
+            <input
               type="email"
+              name="user_email" // Añadir el name para EmailJS (campo email)
               placeholder="Email"
               className="border bg-transparent border-customYellow rounded w-full p-2 mb-4 placeholder-white"
               required
             />
             <input
               type="tel"
+              name="user_phone" // Añadir el name para EmailJS (campo teléfono)
               placeholder="Celular"
               className="border bg-transparent border-customYellow rounded w-full p-2 placeholder-white"
               required
@@ -62,6 +104,7 @@ export default function Contacto() {
           </div>
           <div className="flex flex-col gap-5">
             <textarea
+              name="user_message" // Añadir el name para EmailJS (campo mensaje)
               placeholder="Escribir su mensaje"
               className="border bg-transparent border-customYellow rounded w-full p-2 h-full placeholder-white"
               rows="4"
