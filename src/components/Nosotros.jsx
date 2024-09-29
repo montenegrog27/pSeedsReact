@@ -7,7 +7,6 @@ import "swiper/css/navigation"; // Importar estilos de los botones de navegació
 export default function Nosotros() {
   return (
     <section
-      id="nosotros"
       className="bg-black text-white py-5 md:py-16 bg-cover bg-center px-6 md:px-0"
       style={{
         backgroundImage:
@@ -27,7 +26,8 @@ export default function Nosotros() {
             <div className="h-[1px] md:h-[2px] w-[100%] md:w-[70%] bg-gray-400"></div>
           </div>
         </div>
-        <div className="text-center">
+        <div id="nosotros"
+        className="text-center">
           <h2 className="text-white text-4xl font-bold my-10">Nosotros</h2>
         </div>
       </div>

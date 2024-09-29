@@ -7,6 +7,14 @@ export default function Navbar() {
     setIsMenuOpen((prev) => !prev);
   };
 
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" }); // Efecto de deslizamiento
+    }
+    setIsMenuOpen(false); // Cerrar el menú después de hacer clic
+  };
+
   return (
     <header className="shadow-md">
       <nav className="container mx-auto pt-4 flex justify-between items-center px-5 md:px-20">
@@ -41,7 +49,7 @@ export default function Navbar() {
 
         {/* Sidebar */}
         <div
-          className={`fixed inset-0 bg-black transition-transform duration-300 ease-in-out transform  ${
+          className={`fixed inset-0 bg-black transition-transform duration-300 ease-in-out transform ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           } z-20`}
         >
@@ -52,31 +60,28 @@ export default function Navbar() {
           </div>
           <ul className="flex flex-col items-start justify-start mt-14 ml-10 h-full space-y-4">
             <li>
-              <a
-                href="#nosotros"
+              <button
                 className="text-white text-lg font-bold hover:text-blue-500"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => scrollToSection("nosotros")}
               >
                 Nosotros
-              </a>
+              </button>
             </li>
             <li>
-              <a
-                href="#servicios"
+              <button
                 className="text-white text-lg font-bold hover:text-blue-500"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => scrollToSection("servicios")}
               >
                 Servicios
-              </a>
+              </button>
             </li>
             <li>
-              <a
-                href="#contacto"
+              <button
                 className="text-white text-lg font-bold hover:text-blue-500"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => scrollToSection("contacto")}
               >
                 Contacto
-              </a>
+              </button>
             </li>
           </ul>
         </div>
@@ -102,3 +107,8 @@ export default function Navbar() {
     </header>
   );
 }
+
+ 
+ 
+ 
+ 
