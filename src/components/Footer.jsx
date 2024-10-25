@@ -21,7 +21,6 @@ export default function Footer() {
           />
         </div>
 
-        {/* Redes sociales */}
         <div id="mobile-divDerecha ">
         <div className="flex space-x-4 mb-4 md:mb-0 md:order-2 justify-end ">
         <a
