@@ -1,20 +1,30 @@
 import { useEffect, useState } from "react";
-
-const links = [
-  { id: "nosotros", label: "Nosotros" },
-  { id: "servicios", label: "Servicios" },
-  { id: "contacto", label: "Contacto" },
-];
+import { LuMenu, LuX, LuArrowUpRight } from "react-icons/lu";
+import { IMAGES, NAV_LINKS } from "../config";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Resalta en el menú la sección que se está viendo
+  useEffect(() => {
+    const sections = NAV_LINKS.map(({ id }) => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => entry.isIntersecting && setActive(entry.target.id));
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
   }, []);
 
   // Bloquear el scroll del fondo y permitir cerrar con Escape cuando el menú está abierto
@@ -31,92 +41,100 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-40 transition-colors duration-300 ${
-        scrolled ? "bg-black/80 backdrop-blur-md shadow-md" : "bg-black"
+      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-white/10 bg-ink/75 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
-      <nav className="container mx-auto py-3 flex justify-between items-center px-5 md:px-20">
-        <a href="#" className="block" aria-label="Paradigma Seeds - Inicio">
-          {/* Logotipo para desktop */}
-          <img
-            src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390894/images/Logo_lkdzsg.png"
-            alt="Paradigma Seeds"
-            className="h-12 w-auto hidden md:block"
-          />
-          {/* Logotipo para mobile */}
-          <img
-            src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727392658/images/PS_simbolo_blanco_Preferente_o7ilqx.png"
-            alt="Paradigma Seeds"
-            className="h-10 w-auto block md:hidden"
-          />
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:h-20 md:px-8">
+        <a href="#inicio" className="flex items-center" aria-label="Paradigma Seeds - Inicio">
+          <img src={IMAGES.logo} alt="Paradigma Seeds" className="hidden h-9 w-auto md:block" />
+          <img src={IMAGES.logoSymbol} alt="Paradigma Seeds" className="h-9 w-auto md:hidden" />
         </a>
 
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          className="md:hidden p-2 text-white focus:outline-none focus:ring-2 focus:ring-customYellow rounded"
-          aria-label="Abrir menú"
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-menu"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-7 w-7"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-          </svg>
-        </button>
-
-        {/* Menú móvil */}
-        <div
-          id="mobile-menu"
-          className={`fixed inset-0 h-screen bg-black transition-transform duration-300 ease-in-out md:hidden ${
-            isMenuOpen ? "translate-x-0" : "translate-x-full"
-          } z-30`}
-          aria-hidden={!isMenuOpen}
-        >
-          <div className="flex justify-end p-4">
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className="text-white text-4xl leading-none p-2"
-              aria-label="Cerrar menú"
-              tabIndex={isMenuOpen ? 0 : -1}
-            >
-              &times;
-            </button>
-          </div>
-          <ul className="flex flex-col items-start mt-14 ml-10 space-y-6">
-            {links.map(({ id, label }) => (
-              <li key={id}>
-                <a
-                  href={`#${id}`}
-                  onClick={() => setIsMenuOpen(false)}
-                  tabIndex={isMenuOpen ? 0 : -1}
-                  className="text-white text-2xl font-bold hover:text-customYellow transition"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <ul className="hidden md:flex items-center space-x-8">
-          {links.map(({ id, label }) => (
+        <ul className="hidden items-center gap-1 md:flex">
+          {NAV_LINKS.map(({ id, label }) => (
             <li key={id}>
               <a
                 href={`#${id}`}
-                className="text-gray-100 hover:text-customYellow font-bold transition"
+                aria-current={active === id ? "true" : undefined}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  active === id ? "bg-white/10 text-white" : "text-neutral-400 hover:text-white"
+                }`}
               >
                 {label}
               </a>
             </li>
           ))}
         </ul>
+
+        <a href="#contacto" className="btn-primary hidden !py-2.5 md:inline-flex">
+          Contactanos
+          <LuArrowUpRight className="h-4 w-4" aria-hidden="true" />
+        </a>
+
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="rounded-full p-2 text-white md:hidden"
+          aria-label="Abrir menú"
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+        >
+          <LuMenu className="h-6 w-6" aria-hidden="true" />
+        </button>
       </nav>
+
+      {/* Menú móvil */}
+      <div
+        id="mobile-menu"
+        className={`fixed inset-0 z-50 flex h-[100dvh] flex-col bg-ink/95 backdrop-blur-xl transition-all duration-300 md:hidden ${
+          isMenuOpen ? "visible opacity-100" : "invisible opacity-0"
+        }`}
+        aria-hidden={!isMenuOpen}
+      >
+        <div className="flex h-16 items-center justify-between px-5">
+          <img src={IMAGES.logoSymbol} alt="" className="h-9 w-auto" />
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="rounded-full p-2 text-white"
+            aria-label="Cerrar menú"
+            tabIndex={isMenuOpen ? 0 : -1}
+          >
+            <LuX className="h-6 w-6" aria-hidden="true" />
+          </button>
+        </div>
+        <ul className="flex flex-1 flex-col justify-center gap-2 px-8">
+          {NAV_LINKS.map(({ id, label }, i) => (
+            <li
+              key={id}
+              className={`transition-all duration-500 ${
+                isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+              style={{ transitionDelay: isMenuOpen ? `${100 + i * 60}ms` : "0ms" }}
+            >
+              <a
+                href={`#${id}`}
+                onClick={() => setIsMenuOpen(false)}
+                tabIndex={isMenuOpen ? 0 : -1}
+                className="block py-3 text-3xl font-semibold text-white transition hover:text-customYellow"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div className="p-8">
+          <a
+            href="#contacto"
+            onClick={() => setIsMenuOpen(false)}
+            tabIndex={isMenuOpen ? 0 : -1}
+            className="btn-primary w-full"
+          >
+            Contactanos
+          </a>
+        </div>
+      </div>
     </header>
   );
 }

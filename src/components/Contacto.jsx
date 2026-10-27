@@ -1,9 +1,38 @@
 import { useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
-import { WHATSAPP_DISPLAY, whatsappUrl } from "../config";
+import {
+  LuArrowUpRight,
+  LuMapPin,
+  LuInstagram,
+  LuSend,
+  LuLoader2,
+  LuCheckCircle2,
+  LuAlertCircle,
+} from "react-icons/lu";
+import { SOCIAL, WHATSAPP_DISPLAY, whatsappUrl } from "../config";
+import Reveal from "./Reveal";
 
 const inputClass =
-  "w-full rounded-lg border border-customYellow/60 bg-white/5 p-3 text-white placeholder-gray-400 outline-none transition focus:border-customYellow focus:ring-2 focus:ring-customYellow/40 disabled:opacity-60";
+  "w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder-neutral-500 outline-none transition focus:border-customYellow/70 focus:bg-white/[0.06] focus:ring-4 focus:ring-customYellow/10 disabled:opacity-60";
+const labelClass = "mb-2 block text-sm font-medium text-neutral-300";
+
+const channels = [
+  {
+    icon: FaWhatsapp,
+    label: "WhatsApp",
+    value: WHATSAPP_DISPLAY,
+    href: whatsappUrl(),
+    external: true,
+  },
+  {
+    icon: LuInstagram,
+    label: "Instagram",
+    value: "@paradigma.seeds",
+    href: SOCIAL.instagram,
+    external: true,
+  },
+  { icon: LuMapPin, label: "Ubicación", value: "Corrientes, Argentina" },
+];
 
 export default function Contacto() {
   const form = useRef();
@@ -48,153 +77,183 @@ export default function Contacto() {
   const sending = status === "sending";
 
   return (
-    <section
-      id="contacto"
-      className="bg-customBackGround text-white py-16 px-5 md:px-0"
-    >
-      <div className="text-center mb-12 flex-col flex justify-center items-center gap-6">
-        <h2 className="text-white text-4xl font-bold">Contacto</h2>
-        <p className="font-normal text-gray-200">
-          Comuníquese con nosotros por cualquier duda o consulta
-        </p>
-      </div>
+    <section id="contacto" className="relative py-20 md:py-28">
+      <div
+        className="absolute left-1/2 top-1/3 -z-10 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-customYellow/[0.07] blur-[120px]"
+        aria-hidden="true"
+      />
 
-      <div className="container mx-auto flex justify-center mb-12">
-        <div className="flex flex-col justify-center items-center w-full max-w-md">
-          <div
-            className="border border-gray-500 text-gray-100 rounded-[45px] py-6 w-full flex flex-col items-center bg-cover bg-center"
-            style={{
-              backgroundImage:
-                "url('https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390895/images/Frame49_stujar.jpg')",
-            }}
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 md:px-8 lg:grid-cols-5 lg:gap-16">
+        {/* Columna de información */}
+        <Reveal className="lg:col-span-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-customYellow">
+            Contacto
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+            Hablemos de su proyecto
+          </h2>
+          <p className="mt-5 text-lg leading-relaxed text-neutral-400">
+            Comuníquese con nosotros por cualquier duda o consulta. Le responderemos a la brevedad.
+          </p>
+
+          <ul className="mt-10 space-y-3">
+            {channels.map(({ icon: Icon, label, value, href, external }) => {
+              const content = (
+                <>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-customYellow/10 text-customYellow">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="flex-1">
+                    <span className="block text-xs text-neutral-500">{label}</span>
+                    <span className="block font-semibold text-white">{value}</span>
+                  </span>
+                  {href && (
+                    <LuArrowUpRight
+                      className="h-5 w-5 text-neutral-500 transition group-hover:text-customYellow"
+                      aria-hidden="true"
+                    />
+                  )}
+                </>
+              );
+              return (
+                <li key={label}>
+                  {href ? (
+                    <a
+                      href={href}
+                      {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+                      className="card group flex items-center gap-4 p-4 transition hover:border-customYellow/40 hover:bg-white/[0.05]"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <div className="card flex items-center gap-4 p-4">{content}</div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </Reveal>
+
+        {/* Formulario */}
+        <Reveal delay={120} className="lg:col-span-3">
+          <form
+            ref={form}
+            onSubmit={sendEmail}
+            className="card relative p-6 shadow-2xl shadow-black/40 md:p-10"
           >
-            <div className="mb-6 rounded-full bg-yellow-100 p-2">
-              <FaWhatsapp className="text-black w-[30px] h-[30px]" aria-hidden="true" />
+            <h3 className="text-xl font-semibold text-white">Envíenos un mensaje</h3>
+            <p className="mt-1 text-sm text-neutral-500">Todos los campos son obligatorios.</p>
+
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className={labelClass} htmlFor="user_name">Nombre y apellido</label>
+                <input
+                  id="user_name"
+                  type="text"
+                  name="user_name"
+                  autoComplete="name"
+                  placeholder="Juan Pérez"
+                  className={inputClass}
+                  maxLength={100}
+                  disabled={sending}
+                  required
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="user_email">Email</label>
+                <input
+                  id="user_email"
+                  type="email"
+                  name="user_email"
+                  autoComplete="email"
+                  placeholder="nombre@correo.com"
+                  className={inputClass}
+                  maxLength={120}
+                  disabled={sending}
+                  required
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="user_phone">Celular</label>
+                <input
+                  id="user_phone"
+                  type="tel"
+                  name="user_phone"
+                  autoComplete="tel"
+                  placeholder="379 123 4567"
+                  pattern="[0-9+()\s-]{6,20}"
+                  title="Ingrese un número de teléfono válido"
+                  className={inputClass}
+                  disabled={sending}
+                  required
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className={labelClass} htmlFor="user_message">Mensaje</label>
+                <textarea
+                  id="user_message"
+                  name="user_message"
+                  placeholder="Cuéntenos en qué podemos ayudarle"
+                  className={`${inputClass} min-h-[140px] resize-y`}
+                  rows="5"
+                  maxLength={2000}
+                  disabled={sending}
+                  required
+                ></textarea>
+              </div>
+              {/* Honeypot anti-spam: oculto para personas, los bots lo completan */}
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
             </div>
-            <p className="text-lg font-semibold mb-4">{WHATSAPP_DISPLAY}</p>
-            <div className="bg-gray-100 h-0.5 w-full mb-4"></div>
-            <a
-              href={whatsappUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-customYellow text-black font-bold py-2 px-4 rounded hover:bg-yellow-500 transition duration-200"
-            >
-              Contactar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex-col flex justify-center items-center gap-6">
-        <p className="font-normal text-gray-200 text-center">
-          O deje su mensaje y lo contactaremos a la brevedad
-        </p>
-
-        <form
-          ref={form}
-          onSubmit={sendEmail}
-          className="w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 p-2 md:p-6"
-        >
-          <div className="flex flex-col gap-4">
-            <label className="sr-only" htmlFor="user_name">Nombre y Apellido</label>
-            <input
-              id="user_name"
-              type="text"
-              name="user_name"
-              autoComplete="name"
-              placeholder="Nombre y Apellido"
-              className={inputClass}
-              maxLength={100}
-              disabled={sending}
-              required
-            />
-            <label className="sr-only" htmlFor="user_email">Email</label>
-            <input
-              id="user_email"
-              type="email"
-              name="user_email"
-              autoComplete="email"
-              placeholder="Email"
-              className={inputClass}
-              maxLength={120}
-              disabled={sending}
-              required
-            />
-            <label className="sr-only" htmlFor="user_phone">Celular</label>
-            <input
-              id="user_phone"
-              type="tel"
-              name="user_phone"
-              autoComplete="tel"
-              placeholder="Celular"
-              pattern="[0-9+()\s-]{6,20}"
-              title="Ingrese un número de teléfono válido"
-              className={inputClass}
-              disabled={sending}
-              required
-            />
-            {/* Honeypot anti-spam: oculto para personas, los bots lo completan */}
-            <input
-              type="text"
-              name="website"
-              tabIndex={-1}
-              autoComplete="off"
-              className="hidden"
-              aria-hidden="true"
-            />
-          </div>
-          <div className="flex flex-col gap-4">
-            <label className="sr-only" htmlFor="user_message">Mensaje</label>
-            <textarea
-              id="user_message"
-              name="user_message"
-              placeholder="Escribir su mensaje"
-              className={`${inputClass} h-full min-h-[140px] resize-none`}
-              rows="5"
-              maxLength={2000}
-              disabled={sending}
-              required
-            ></textarea>
-          </div>
-
-          <div className="md:col-span-2 flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4">
-            <div role="status" aria-live="polite" className="text-sm min-h-[1.25rem]">
+            <div role="status" aria-live="polite">
               {status === "success" && (
-                <p className="text-green-400">
-                  ¡Mensaje enviado con éxito! Le responderemos a la brevedad.
-                </p>
+                <div className="mt-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300">
+                  <LuCheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+                  <p>¡Mensaje enviado con éxito! Le responderemos a la brevedad.</p>
+                </div>
               )}
               {status === "error" && (
-                <p className="text-red-400">
-                  {errorMsg ? `${errorMsg} ` : "No pudimos enviar el mensaje. "}
-                  Intente nuevamente o escríbanos por{" "}
-                  <a
-                    href={whatsappUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline"
-                  >
-                    WhatsApp
-                  </a>
-                  .
-                </p>
+                <div className="mt-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300">
+                  <LuAlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+                  <p>
+                    {errorMsg ? `${errorMsg} ` : "No pudimos enviar el mensaje. "}
+                    Intente nuevamente o escríbanos por{" "}
+                    <a
+                      href={whatsappUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold underline underline-offset-2"
+                    >
+                      WhatsApp
+                    </a>
+                    .
+                  </p>
+                </div>
               )}
             </div>
-            <button
-              type="submit"
-              disabled={sending}
-              className="self-end inline-flex items-center gap-2 bg-customYellow text-black font-bold py-2 px-6 rounded hover:bg-yellow-500 transition duration-200 disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              {sending && (
-                <span
-                  className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent"
-                  aria-hidden="true"
-                />
+
+            <button type="submit" disabled={sending} className="btn-primary mt-8 w-full !py-4 text-base">
+              {sending ? (
+                <>
+                  <LuLoader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  Enviar mensaje
+                  <LuSend className="h-4 w-4" aria-hidden="true" />
+                </>
               )}
-              {sending ? "Enviando..." : "Enviar"}
             </button>
-          </div>
-        </form>
+          </form>
+        </Reveal>
       </div>
     </section>
   );
