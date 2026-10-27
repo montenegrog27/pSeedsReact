@@ -1,4 +1,3 @@
-import React from "react";
 import { FaFacebook, FaInstagram,FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
@@ -8,24 +7,25 @@ export default function Footer() {
         {/* Logo en móvil y escritorio */}
         <div id="mobile-divIzquierda" className="flex items-center justify-center md:justify-start mb-4 md:mb-0 ">
           {/* Logo para móvil */}
-          <img
+          <img loading="lazy"
             src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727392658/images/PS_simbolo_blanco_Preferente_o7ilqx.png"
             alt="Logotipo de Paradigma Seeds móvil"
             className="h-10 md:hidden" // Solo visible en móvil
           />
           {/* Logo para escritorio */}
-          <img
+          <img loading="lazy"
             src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390894/images/Logo_lkdzsg.png"
             alt="Logotipo de Paradigma Seeds escritorio"
             className="hidden md:block h-14" // Solo visible en escritorio
           />
         </div>
 
-        <div id="mobile-divDerecha ">
+        <div id="mobile-divDerecha">
         <div className="flex space-x-4 mb-4 md:mb-0 md:order-2 justify-end ">
         <a
             href="https://ar.linkedin.com/in/paradigmaseeds"
             target="_blank"
+            aria-label="LinkedIn de Paradigma Seeds"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-white"
           >
@@ -35,6 +35,7 @@ export default function Footer() {
           <a
             href="https://www.facebook.com/share/Cmwm3uQzcRhkHrFT/?mibextid=qi2Omg"
             target="_blank"
+            aria-label="Facebook de Paradigma Seeds"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-white"
           >
@@ -43,6 +44,7 @@ export default function Footer() {
           <a
             href="https://www.instagram.com/paradigma.seeds/"
             target="_blank"
+            aria-label="Instagram de Paradigma Seeds"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-white"
           >
@@ -54,17 +56,17 @@ export default function Footer() {
         {/* Links en móvil y escritorio */}
         <ul className="flex flex-row text-sm md:text-md md:flex-col items-center text-center justify-rounded gap-1   md:space-y-0 md:space-x-6 md:order-1">
           <li>
-            <a href="#nosotros" className="hover:text-blue-500 font-bold ">
+            <a href="#nosotros" className="hover:text-customYellow font-bold ">
               Nosotros
             </a>
           </li>
           <li>
-            <a href="#servicios" className="hover:text-blue-500 font-bold ">
+            <a href="#servicios" className="hover:text-customYellow font-bold ">
               Servicios
             </a>
           </li>
           <li>
-            <a href="#contacto" className="hover:text-blue-500 font-bold ">
+            <a href="#contacto" className="hover:text-customYellow font-bold ">
               Contacto
             </a>
           </li>
@@ -75,7 +77,7 @@ export default function Footer() {
       {/* Copyright en la parte inferior */}
       <div className="text-center mt-4">
         <p className="text-gray-400 text-xs md:text-md">
-          © 2024 Paradigma Seeds. Todos los derechos reservados.
+          © {new Date().getFullYear()} Paradigma Seeds. Todos los derechos reservados.
         </p>
       </div>
     </footer>

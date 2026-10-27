@@ -1,114 +1,122 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+
+const links = [
+  { id: "nosotros", label: "Nosotros" },
+  { id: "servicios", label: "Servicios" },
+  { id: "contacto", label: "Contacto" },
+];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev);
-  };
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  const scrollToSection = (sectionId) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" }); // Efecto de deslizamiento
-    }
-    setIsMenuOpen(false); // Cerrar el menú después de hacer clic
-  };
+  // Bloquear el scroll del fondo y permitir cerrar con Escape cuando el menú está abierto
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const onKey = (e) => e.key === "Escape" && setIsMenuOpen(false);
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isMenuOpen]);
 
   return (
-    <header className="shadow-md">
-      <nav className="container mx-auto pt-4 flex justify-between items-center px-5 md:px-20">
-        <div className="text-2xl font-bold">
+    <header
+      className={`sticky top-0 z-40 transition-colors duration-300 ${
+        scrolled ? "bg-black/80 backdrop-blur-md shadow-md" : "bg-black"
+      }`}
+    >
+      <nav className="container mx-auto py-3 flex justify-between items-center px-5 md:px-20">
+        <a href="#" className="block" aria-label="Paradigma Seeds - Inicio">
           {/* Logotipo para desktop */}
           <img
             src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390894/images/Logo_lkdzsg.png"
-            alt="Logotipo de Paradigma Seeds Desktop"
-            className="w-[60%] h-[60%] hidden md:block"
+            alt="Paradigma Seeds"
+            className="h-12 w-auto hidden md:block"
           />
           {/* Logotipo para mobile */}
           <img
             src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727392658/images/PS_simbolo_blanco_Preferente_o7ilqx.png"
-            alt="Logotipo de Paradigma Seeds Mobile"
-            className="w-[75%] h-[75%] block md:hidden"
+            alt="Paradigma Seeds"
+            className="h-10 w-auto block md:hidden"
           />
-        </div>
+        </a>
 
-        <div className="md:hidden">
-          <button onClick={toggleMenu} className="focus:outline-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-700"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
-        </div>
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="md:hidden p-2 text-white focus:outline-none focus:ring-2 focus:ring-customYellow rounded"
+          aria-label="Abrir menú"
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-7 w-7"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
 
-        {/* Sidebar */}
+        {/* Menú móvil */}
         <div
-          className={`fixed inset-0 bg-black transition-transform duration-300 ease-in-out transform ${
+          id="mobile-menu"
+          className={`fixed inset-0 h-screen bg-black transition-transform duration-300 ease-in-out md:hidden ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
-          } z-20`}
+          } z-30`}
+          aria-hidden={!isMenuOpen}
         >
           <div className="flex justify-end p-4">
-            <button onClick={() => setIsMenuOpen(false)} className="text-white text-4xl">
-              &times; {/* X para cerrar */}
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="text-white text-4xl leading-none p-2"
+              aria-label="Cerrar menú"
+              tabIndex={isMenuOpen ? 0 : -1}
+            >
+              &times;
             </button>
           </div>
-          <ul className="flex flex-col items-start justify-start mt-14 ml-10 h-full space-y-4">
-            <li>
-              <button
-                className="text-white text-lg font-bold hover:text-blue-500"
-                onClick={() => scrollToSection("nosotros")}
-              >
-                Nosotros
-              </button>
-            </li>
-            <li>
-              <button
-                className="text-white text-lg font-bold hover:text-blue-500"
-                onClick={() => scrollToSection("servicios")}
-              >
-                Servicios
-              </button>
-            </li>
-            <li>
-              <button
-                className="text-white text-lg font-bold hover:text-blue-500"
-                onClick={() => scrollToSection("contacto")}
-              >
-                Contacto
-              </button>
-            </li>
+          <ul className="flex flex-col items-start mt-14 ml-10 space-y-6">
+            {links.map(({ id, label }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  onClick={() => setIsMenuOpen(false)}
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  className="text-white text-2xl font-bold hover:text-customYellow transition"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
-        <ul className="hidden md:flex space-x-6">
-          <li>
-            <a href="#nosotros" className="text-gray-100 hover:text-gray-500 font-bold">
-              Nosotros
-            </a>
-          </li>
-          <li>
-            <a href="#servicios" className="text-gray-100 hover:text-gray-500 font-bold">
-              Servicios
-            </a>
-          </li>
-          <li>
-            <a href="#contacto" className="text-gray-100 hover:text-gray-500 font-bold">
-              Contacto
-            </a>
-          </li>
+        <ul className="hidden md:flex items-center space-x-8">
+          {links.map(({ id, label }) => (
+            <li key={id}>
+              <a
+                href={`#${id}`}
+                className="text-gray-100 hover:text-customYellow font-bold transition"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
         </ul>
       </nav>
     </header>
   );
 }
-
- 
- 
- 
- 

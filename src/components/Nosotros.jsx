@@ -1,4 +1,3 @@
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules"; // Ajuste en la importación
 import "swiper/css";
@@ -16,9 +15,9 @@ export default function Nosotros() {
       {/* Título centrado */}
       <div className="text-center mb-8 flex flex-col justify-center items-center">
         <div className="w-[65%]">
-          <h1 className="text-customYellow text-2xl md:text-4xl font-bold">
+          <h2 className="text-customYellow text-2xl md:text-4xl font-bold">
             Registrados en INASE Categoría A Criaderos
-          </h1>
+          </h2>
           <p className="text-lg md:text-xl mt-4 font-normal">
             Fitomejoramiento, investigación e inscripción de nuevas variedades.
           </p>
@@ -46,22 +45,22 @@ export default function Nosotros() {
             <SwiperSlide>
               <img 
                 src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395792/images/carrousel2_usirp3.png"
-                alt="Descripción de la imagen"
+                alt="Cultivo de Paradigma Seeds"
                 className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>
             <SwiperSlide>
-              <img
+              <img loading="lazy"
                 src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395815/images/carrousel1_kyosda.png"
-                alt="Imagen 2"
+                alt="Genética de Paradigma Seeds"
                 className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>
             <SwiperSlide>
-              <img
+              <img loading="lazy"
               
                 src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390896/images/PSsinfondo3_wsim2y.png"
-                alt="Imagen 3"
+                alt="Variedad de Paradigma Seeds"
                 className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
               />
             </SwiperSlide>

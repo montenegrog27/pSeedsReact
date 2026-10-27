@@ -1,4 +1,3 @@
-import React from "react";
 
 export default function Servicios() {
   return (
@@ -38,9 +37,9 @@ export default function Servicios() {
 
         {/* Imagen a la izquierda */}
         <div className="hidden md:block w-full md:w-1/2 flex justify-center">
-          <img
+          <img loading="lazy"
             src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727404146/images/imagen44_podfgh.png"
-            alt="Descripción de la imagen"
+            alt="Asesoramiento en cultivo de cannabis"
             className="rounded-lg max-w-full h-auto"
           />
         </div>

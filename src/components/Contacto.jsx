@@ -1,124 +1,198 @@
-import React, { useRef } from "react";
+import { useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
-import emailjs from "emailjs-com";
+import { WHATSAPP_DISPLAY, whatsappUrl } from "../config";
+
+const inputClass =
+  "w-full rounded-lg border border-customYellow/60 bg-white/5 p-3 text-white placeholder-gray-400 outline-none transition focus:border-customYellow focus:ring-2 focus:ring-customYellow/40 disabled:opacity-60";
 
 export default function Contacto() {
-  // Crear referencia para el formulario
   const form = useRef();
+  // idle | sending | success | error
+  const [status, setStatus] = useState("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  // Función para enviar el formulario usando EmailJS
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault();
+    if (status === "sending") return;
 
-    emailjs
-      .sendForm(
-        "service_nexvm8q", // Reemplaza con tu ID de servicio de EmailJS
-        "template_5gskna8", // Reemplaza con tu ID de plantilla
-        form.current,
-        "AkgJrl-PPGV15mys2"  // Reemplaza con tu ID de usuario de EmailJS
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-          alert("¡Mensaje enviado con éxito!");
-        },
-        (error) => {
-          console.log(error.text);
-          alert("Hubo un error al enviar el mensaje.");
-        }
-      );
+    const fields = Object.fromEntries(new FormData(form.current));
+    setStatus("sending");
+    try {
+      const response = await fetch("/api/contacto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fields.user_name,
+          email: fields.user_email,
+          phone: fields.user_phone,
+          message: fields.user_message,
+          website: fields.website, // honeypot anti-spam
+        }),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        setErrorMsg(result.error || "");
+        setStatus("error");
+        return;
+      }
 
-    e.target.reset(); // Resetea el formulario después de enviarlo
+      setStatus("success");
+      form.current.reset(); // Solo se limpia si el envío salió bien
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      setErrorMsg("");
+      setStatus("error");
+    }
   };
+
+  const sending = status === "sending";
 
   return (
     <section
       id="contacto"
       className="bg-customBackGround text-white py-16 px-5 md:px-0"
     >
-      <div className="text-center mb-12 flex-col flex justify-center items-center gap-10">
+      <div className="text-center mb-12 flex-col flex justify-center items-center gap-6">
         <h2 className="text-white text-4xl font-bold">Contacto</h2>
-        <p className="font-normal text-white">
+        <p className="font-normal text-gray-200">
           Comuníquese con nosotros por cualquier duda o consulta
         </p>
       </div>
 
-      <div className="container mx-auto flex justify-center mb-5">
-  <div className="flex flex-col justify-center items-center w-[90%] md:w-[40%]">
-    <div
-      className="border border-gray-150 bg-transparent text-gray-100 rounded-[45px] py-6 w-full flex flex-col items-center"
-      style={{
-        backgroundImage:
-          "url('https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390895/images/Frame49_stujar.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="mb-6 rounded-full bg-yellow-100 flex justify-start items-center px-2 py-2">
-        <FaWhatsapp className="text-black w-[30px] h-[30px]" />
+      <div className="container mx-auto flex justify-center mb-12">
+        <div className="flex flex-col justify-center items-center w-full max-w-md">
+          <div
+            className="border border-gray-500 text-gray-100 rounded-[45px] py-6 w-full flex flex-col items-center bg-cover bg-center"
+            style={{
+              backgroundImage:
+                "url('https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390895/images/Frame49_stujar.jpg')",
+            }}
+          >
+            <div className="mb-6 rounded-full bg-yellow-100 p-2">
+              <FaWhatsapp className="text-black w-[30px] h-[30px]" aria-hidden="true" />
+            </div>
+            <p className="text-lg font-semibold mb-4">{WHATSAPP_DISPLAY}</p>
+            <div className="bg-gray-100 h-0.5 w-full mb-4"></div>
+            <a
+              href={whatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-customYellow text-black font-bold py-2 px-4 rounded hover:bg-yellow-500 transition duration-200"
+            >
+              Contactar por WhatsApp
+            </a>
+          </div>
+        </div>
       </div>
-      <p className="text-lg font-semibold mb-4">3795389253</p>
-      <div id="linea" className="bg-gray-100 h-0.5 w-full mb-4"></div>
-      <a
-        href="https://wa.me/+54379155389253?text=Hola,%20vengo%20de%20la%20web%20de%20Paradigma%20Seeds,%20quiero%20más%20información%20sobre..."
-        className="bg-customYellow text-black font-bold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200"
-      >
-        Contactar
-      </a>
-    </div>
-  </div>
-</div>
 
-
-      <div className="text-center mb-12 flex-col flex justify-center items-center gap-10">
-        <p className="font-normal text-white">
+      <div className="flex-col flex justify-center items-center gap-6">
+        <p className="font-normal text-gray-200 text-center">
           O deje su mensaje y lo contactaremos a la brevedad
         </p>
 
         <form
-          ref={form} // Añadir la referencia al formulario
-          onSubmit={sendEmail} // Manejar el evento de envío
-          className="bg-transparent rounded-3xl w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 p-6"
+          ref={form}
+          onSubmit={sendEmail}
+          className="w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 p-2 md:p-6"
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-4">
+            <label className="sr-only" htmlFor="user_name">Nombre y Apellido</label>
+            <input
+              id="user_name"
+              type="text"
+              name="user_name"
+              autoComplete="name"
+              placeholder="Nombre y Apellido"
+              className={inputClass}
+              maxLength={100}
+              disabled={sending}
+              required
+            />
+            <label className="sr-only" htmlFor="user_email">Email</label>
+            <input
+              id="user_email"
+              type="email"
+              name="user_email"
+              autoComplete="email"
+              placeholder="Email"
+              className={inputClass}
+              maxLength={120}
+              disabled={sending}
+              required
+            />
+            <label className="sr-only" htmlFor="user_phone">Celular</label>
+            <input
+              id="user_phone"
+              type="tel"
+              name="user_phone"
+              autoComplete="tel"
+              placeholder="Celular"
+              pattern="[0-9+()\s-]{6,20}"
+              title="Ingrese un número de teléfono válido"
+              className={inputClass}
+              disabled={sending}
+              required
+            />
+            {/* Honeypot anti-spam: oculto para personas, los bots lo completan */}
             <input
               type="text"
-              name="user_name" // Añadir el name para EmailJS (campo nombre)
-              placeholder="Nombre y Apellido"
-              className="border bg-transparent border-customYellow rounded w-full p-2 mb-4 placeholder-white"
-              required
-            />
-            <input
-              type="email"
-              name="user_email" // Añadir el name para EmailJS (campo email)
-              placeholder="Email"
-              className="border bg-transparent border-customYellow rounded w-full p-2 mb-4 placeholder-white"
-              required
-            />
-            <input
-              type="tel"
-              name="user_phone" // Añadir el name para EmailJS (campo teléfono)
-              placeholder="Celular"
-              className="border bg-transparent border-customYellow rounded w-full p-2 placeholder-white"
-              required
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+              aria-hidden="true"
             />
           </div>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
+            <label className="sr-only" htmlFor="user_message">Mensaje</label>
             <textarea
-              name="user_message" // Añadir el name para EmailJS (campo mensaje)
+              id="user_message"
+              name="user_message"
               placeholder="Escribir su mensaje"
-              className="border bg-transparent border-customYellow rounded w-full p-2 h-full placeholder-white"
-              rows="4"
+              className={`${inputClass} h-full min-h-[140px] resize-none`}
+              rows="5"
+              maxLength={2000}
+              disabled={sending}
               required
             ></textarea>
-            <div className="flex justify-end items-center mr-10">
-              <button
-                type="submit"
-                className="bg-customYellow text-black font-bold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200"
-              >
-                Enviar
-              </button>
+          </div>
+
+          <div className="md:col-span-2 flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4">
+            <div role="status" aria-live="polite" className="text-sm min-h-[1.25rem]">
+              {status === "success" && (
+                <p className="text-green-400">
+                  ¡Mensaje enviado con éxito! Le responderemos a la brevedad.
+                </p>
+              )}
+              {status === "error" && (
+                <p className="text-red-400">
+                  {errorMsg ? `${errorMsg} ` : "No pudimos enviar el mensaje. "}
+                  Intente nuevamente o escríbanos por{" "}
+                  <a
+                    href={whatsappUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    WhatsApp
+                  </a>
+                  .
+                </p>
+              )}
             </div>
+            <button
+              type="submit"
+              disabled={sending}
+              className="self-end inline-flex items-center gap-2 bg-customYellow text-black font-bold py-2 px-6 rounded hover:bg-yellow-500 transition duration-200 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {sending && (
+                <span
+                  className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent"
+                  aria-hidden="true"
+                />
+              )}
+              {sending ? "Enviando..." : "Enviar"}
+            </button>
           </div>
         </form>
       </div>
