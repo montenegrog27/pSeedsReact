@@ -1,92 +1,87 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules"; // Ajuste en la importación
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/navigation"; // Importar estilos de los botones de navegación
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { LuCheck } from "react-icons/lu";
+import { IMAGES } from "../config";
+import Reveal from "./Reveal";
+
+const highlights = [
+  "Más de 15 años de experiencia en el cultivo del cannabis",
+  "Investigación, desarrollo y fitomejoramiento genético",
+  "Registro de diversas variedades ante INASE",
+  "Acompañamiento en todo el proceso de cultivo",
+];
 
 export default function Nosotros() {
   return (
-    <section
-      className="bg-black text-white py-5 md:py-16 bg-cover bg-center px-6 md:px-0"
-      style={{
-        backgroundImage:
-          "url('https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390895/images/backgroundNosotros_whfzhn.png')",
-      }}
-    >
-      {/* Título centrado */}
-      <div className="text-center mb-8 flex flex-col justify-center items-center">
-        <div className="w-[65%]">
-          <h2 className="text-customYellow text-2xl md:text-4xl font-bold">
-            Registrados en INASE Categoría A Criaderos
-          </h2>
-          <p className="text-lg md:text-xl mt-4 font-normal">
-            Fitomejoramiento, investigación e inscripción de nuevas variedades.
-          </p>
-          <div className="flex justify-center items-center mt-2 md:mt-5">
-            <div className="h-[1px] md:h-[2px] w-[100%] md:w-[70%] bg-gray-400"></div>
+    <section id="nosotros" className="relative overflow-hidden py-20 md:py-28">
+      <div
+        className="absolute inset-0 -z-10 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url('${IMAGES.nosotrosBg}')` }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-ink via-ink/80 to-ink"
+        aria-hidden="true"
+      />
+
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-5 md:px-8 lg:grid-cols-2 lg:gap-20">
+        <Reveal className="relative order-2 mx-auto w-full min-w-0 max-w-md lg:order-1">
+          <div
+            className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-customYellow/20 to-transparent blur-2xl"
+            aria-hidden="true"
+          />
+          <div className="card relative overflow-hidden p-3">
+            <Swiper
+              modules={[Navigation, Pagination, Autoplay]}
+              navigation
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 5000, disableOnInteraction: true }}
+              loop
+              spaceBetween={12}
+              className="swiper-brand rounded-[1.25rem]"
+            >
+              {IMAGES.carousel.map(({ src, alt }) => (
+                <SwiperSlide key={src}>
+                  <div className="flex aspect-[4/5] items-center justify-center bg-gradient-to-b from-white/[0.04] to-transparent">
+                    <img src={src} alt={alt} loading="lazy" className="h-full w-full object-contain" />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
-        </div>
-        <div id="nosotros"
-        className="text-center">
-          <h2 className="text-white text-4xl font-bold my-10">Nosotros</h2>
-        </div>
-      </div>
+        </Reveal>
 
-      {/* Contenedor del carrusel y el texto */}
-      <div className="container mx-auto flex flex-col-reverse md:flex-row items-start justify-center gap-8 ">
-        {/* Contenedor del carrusel */}
-        <div className="w-full md:w-[30%] max-w-[400px]"> {/* Más angosto aquí */}
-          <Swiper
-            spaceBetween={30}
-            centeredSlides={true}
-            navigation={true} // Habilitar botones de navegación en escritorio
-            modules={[Navigation]}
-            className="w-full h-auto" // Ajuste de tamaño
-          >
-            <SwiperSlide>
-              <img 
-                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395792/images/carrousel2_usirp3.png"
-                alt="Cultivo de Paradigma Seeds"
-                className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img loading="lazy"
-                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727395815/images/carrousel1_kyosda.png"
-                alt="Genética de Paradigma Seeds"
-                className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img loading="lazy"
-              
-                src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390896/images/PSsinfondo3_wsim2y.png"
-                alt="Variedad de Paradigma Seeds"
-                className="rounded-lg w-full h-auto object-contain" // Cambiar a object-contain
-              />
-            </SwiperSlide>
-          </Swiper>
-        </div>
-
-        {/* Texto a la derecha */}
-        <div className="w-full md:pl-20 md:w-1/2 space-y-2 md:space-y-4 md:mt-20">
-          <div className="md:w-[90%] flex-col space-y-10 justify-center items-center md:text-lg ">
-            <p>
+        <div className="order-1 min-w-0 lg:order-2">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-customYellow">
+              Nosotros
+            </p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+              Un banco de semillas nacido en Corrientes
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-neutral-400">
               Somos un banco de semillas de cannabis de Corrientes,{" "}
-              <strong>
+              <strong className="font-semibold text-white">
                 con más de 15 años de experiencia en el cultivo del cannabis.
-              </strong>
+              </strong>{" "}
+              Nos dedicamos a la investigación, desarrollo, fitomejoramiento genético y registro de
+              diversas variedades de cannabis.
             </p>
-            <p>
-              Nos dedicamos a la investigación, desarrollo, fitomejoramiento
-              genético y registro de diversas variedades de cannabis.
-            </p>
-            <p>
-              Brindamos servicios de asesoramiento en todo el proceso de
-              cultivo, desde la elección de la genética hasta los cuidados en
-              cada etapa: germinación, vegetativo, floración, almacenamiento y
-              consumo responsable.
-            </p>
-          </div>
+          </Reveal>
+
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+            {highlights.map((item, i) => (
+              <Reveal as="li" key={item} delay={i * 80} className="flex gap-3">
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-customYellow/15 text-customYellow">
+                  <LuCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                </span>
+                <span className="text-sm leading-relaxed text-neutral-300">{item}</span>
+              </Reveal>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

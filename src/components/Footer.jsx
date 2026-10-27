@@ -1,84 +1,76 @@
-import { FaFacebook, FaInstagram,FaLinkedin } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa6";
+import { LuInstagram, LuFacebook, LuLinkedin } from "react-icons/lu";
+import { IMAGES, NAV_LINKS, SOCIAL, WHATSAPP_DISPLAY, whatsappUrl } from "../config";
+
+const socials = [
+  { href: SOCIAL.instagram, label: "Instagram", icon: LuInstagram },
+  { href: SOCIAL.facebook, label: "Facebook", icon: LuFacebook },
+  { href: SOCIAL.linkedin, label: "LinkedIn", icon: LuLinkedin },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-gray-100 p-5 md:p-20">
-      <div className="container mx-auto flex flex-row md:flex-row items-center justify-around md:justify-between">
-        {/* Logo en móvil y escritorio */}
-        <div id="mobile-divIzquierda" className="flex items-center justify-center md:justify-start mb-4 md:mb-0 ">
-          {/* Logo para móvil */}
-          <img loading="lazy"
-            src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727392658/images/PS_simbolo_blanco_Preferente_o7ilqx.png"
-            alt="Logotipo de Paradigma Seeds móvil"
-            className="h-10 md:hidden" // Solo visible en móvil
-          />
-          {/* Logo para escritorio */}
-          <img loading="lazy"
-            src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390894/images/Logo_lkdzsg.png"
-            alt="Logotipo de Paradigma Seeds escritorio"
-            className="hidden md:block h-14" // Solo visible en escritorio
-          />
+    <footer className="border-t border-white/10">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-4 md:px-8">
+        <div className="md:col-span-2">
+          <img src={IMAGES.logo} alt="Paradigma Seeds" loading="lazy" className="h-10 w-auto" />
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-neutral-500">
+            Banco de semillas de cannabis de Corrientes. Investigación, desarrollo, fitomejoramiento
+            genético y registro de variedades. Registrados en INASE · Categoría A Criaderos.
+          </p>
+          <div className="mt-6 flex gap-3">
+            {socials.map(({ href, label, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${label} de Paradigma Seeds`}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-neutral-400 transition hover:border-customYellow/50 hover:text-customYellow"
+              >
+                <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+              </a>
+            ))}
+          </div>
         </div>
 
-        <div id="mobile-divDerecha">
-        <div className="flex space-x-4 mb-4 md:mb-0 md:order-2 justify-end ">
-        <a
-            href="https://ar.linkedin.com/in/paradigmaseeds"
-            target="_blank"
-            aria-label="LinkedIn de Paradigma Seeds"
-            rel="noopener noreferrer"
-            className="text-gray-300 hover:text-white"
-          >
-            <FaLinkedin className="h-6 w-6" />
+        <nav aria-label="Secciones">
+          <h3 className="text-sm font-semibold text-white">Secciones</h3>
+          <ul className="mt-4 space-y-3">
+            {NAV_LINKS.map(({ id, label }) => (
+              <li key={id}>
+                <a href={`#${id}`} className="text-sm text-neutral-500 transition hover:text-customYellow">
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-          </a>
-          <a
-            href="https://www.facebook.com/share/Cmwm3uQzcRhkHrFT/?mibextid=qi2Omg"
-            target="_blank"
-            aria-label="Facebook de Paradigma Seeds"
-            rel="noopener noreferrer"
-            className="text-gray-300 hover:text-white"
-          >
-            <FaFacebook className="h-6 w-6" />
-          </a>
-          <a
-            href="https://www.instagram.com/paradigma.seeds/"
-            target="_blank"
-            aria-label="Instagram de Paradigma Seeds"
-            rel="noopener noreferrer"
-            className="text-gray-300 hover:text-white"
-          >
-            <FaInstagram className="h-6 w-6" />
-          </a>
-
-        </div>
-
-        {/* Links en móvil y escritorio */}
-        <ul className="flex flex-row text-sm md:text-md md:flex-col items-center text-center justify-rounded gap-1   md:space-y-0 md:space-x-6 md:order-1">
-          <li>
-            <a href="#nosotros" className="hover:text-customYellow font-bold ">
-              Nosotros
-            </a>
-          </li>
-          <li>
-            <a href="#servicios" className="hover:text-customYellow font-bold ">
-              Servicios
-            </a>
-          </li>
-          <li>
-            <a href="#contacto" className="hover:text-customYellow font-bold ">
-              Contacto
-            </a>
-          </li>
-        </ul>
+        <div>
+          <h3 className="text-sm font-semibold text-white">Contacto</h3>
+          <ul className="mt-4 space-y-3 text-sm text-neutral-500">
+            <li>
+              <a
+                href={whatsappUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 transition hover:text-customYellow"
+              >
+                <FaWhatsapp className="h-4 w-4" aria-hidden="true" />
+                {WHATSAPP_DISPLAY}
+              </a>
+            </li>
+            <li>Corrientes, Argentina</li>
+          </ul>
         </div>
       </div>
 
-      {/* Copyright en la parte inferior */}
-      <div className="text-center mt-4">
-        <p className="text-gray-400 text-xs md:text-md">
-          © {new Date().getFullYear()} Paradigma Seeds. Todos los derechos reservados.
-        </p>
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-5 py-6 text-xs text-neutral-600 md:flex-row md:px-8">
+          <p>© {new Date().getFullYear()} Paradigma Seeds. Todos los derechos reservados.</p>
+          <p>Contenido destinado a mayores de 18 años.</p>
+        </div>
       </div>
     </footer>
   );
