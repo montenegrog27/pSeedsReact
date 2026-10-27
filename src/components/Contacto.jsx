@@ -1,16 +1,6 @@
 import { useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
-import emailjs from "@emailjs/browser";
 import { WHATSAPP_DISPLAY, whatsappUrl } from "../config";
-
-// Credenciales de EmailJS (la public key es pública por diseño).
-// Se pueden sobrescribir con variables de entorno VITE_EMAILJS_* (ver .env.example).
-const EMAILJS_SERVICE_ID =
-  import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_nexvm8q";
-const EMAILJS_TEMPLATE_ID =
-  import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "template_5gskna8";
-const EMAILJS_PUBLIC_KEY =
-  import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "AkgJrl-PPGV15mys2";
 
 const inputClass =
   "w-full rounded-lg border border-customYellow/60 bg-white/5 p-3 text-white placeholder-gray-400 outline-none transition focus:border-customYellow focus:ring-2 focus:ring-customYellow/40 disabled:opacity-60";
@@ -19,34 +9,38 @@ export default function Contacto() {
   const form = useRef();
   // idle | sending | success | error
   const [status, setStatus] = useState("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const sendEmail = async (e) => {
     e.preventDefault();
     if (status === "sending") return;
 
-    // Honeypot anti-spam: los humanos no ven este campo, los bots lo completan.
-    if (form.current.elements.website.value) {
-      setStatus("success");
-      form.current.reset();
-      return;
-    }
-
+    const fields = Object.fromEntries(new FormData(form.current));
     setStatus("sending");
     try {
-      await emailjs.sendForm(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        form.current,
-        {
-          publicKey: EMAILJS_PUBLIC_KEY,
-          // Evita envíos repetidos desde el mismo navegador en menos de 30 s.
-          limitRate: { id: "contacto", throttle: 30000 },
-        }
-      );
+      const response = await fetch("/api/contacto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fields.user_name,
+          email: fields.user_email,
+          phone: fields.user_phone,
+          message: fields.user_message,
+          website: fields.website, // honeypot anti-spam
+        }),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        setErrorMsg(result.error || "");
+        setStatus("error");
+        return;
+      }
+
       setStatus("success");
       form.current.reset(); // Solo se limpia si el envío salió bien
     } catch (error) {
       console.error("Error al enviar el formulario:", error);
+      setErrorMsg("");
       setStatus("error");
     }
   };
@@ -139,7 +133,7 @@ export default function Contacto() {
               disabled={sending}
               required
             />
-            {/* Honeypot: oculto para personas */}
+            {/* Honeypot anti-spam: oculto para personas, los bots lo completan */}
             <input
               type="text"
               name="website"
@@ -172,8 +166,8 @@ export default function Contacto() {
               )}
               {status === "error" && (
                 <p className="text-red-400">
-                  No pudimos enviar el mensaje. Intente nuevamente en unos
-                  segundos o escríbanos por{" "}
+                  {errorMsg ? `${errorMsg} ` : "No pudimos enviar el mensaje. "}
+                  Intente nuevamente o escríbanos por{" "}
                   <a
                     href={whatsappUrl()}
                     target="_blank"

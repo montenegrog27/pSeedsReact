@@ -12,25 +12,43 @@ npm run build    # genera dist/
 npm run preview  # sirve el build localmente
 ```
 
-## Formulario de contacto (EmailJS)
+## Formulario de contacto (Vercel + Resend)
 
-El formulario de la sección **Contacto** envía los mensajes con [EmailJS](https://www.emailjs.com/),
-sin backend propio.
+El formulario de la sección **Contacto** envía los datos a la función serverless
+`api/contacto.js`, que valida los campos y manda el correo con [Resend](https://resend.com).
+La API key queda en el servidor y nunca se expone en el navegador.
 
-- **A qué correo llegan las consultas:** se define en el panel de EmailJS, no en el código.
-  Entrar a <https://dashboard.emailjs.com> → *Email Templates* → plantilla `template_5gskna8`
-  → campo **To Email**. Si está vacío o usa `{{to_email}}`, llega al correo de la cuenta
-  conectada en *Email Services* (`service_nexvm8q`).
-- **Variables que envía el formulario** (usarlas en la plantilla): `{{user_name}}`,
-  `{{user_email}}`, `{{user_phone}}`, `{{user_message}}`. Se recomienda poner
-  `{{user_email}}` en el campo **Reply To** para poder responder directo al cliente.
-- **Seguridad:** en *Account → Security* activar la lista de dominios permitidos con el
-  dominio de producción, para que nadie más use la cuota con esta public key.
-- Para cambiar las credenciales sin tocar el código, copiar `.env.example` a `.env`
-  (o configurar las variables `VITE_EMAILJS_*` en el hosting) y volver a hacer el build.
+Las consultas llegan a **info@paradigmaseed.com**. Al presionar "Responder" se le contesta
+directamente al cliente (se usa su email como *Reply-To*).
 
-El formulario incluye protección anti-spam (honeypot + límite de un envío cada 30 s por
-navegador), indicador de envío y mensajes de éxito/error en pantalla.
+### Configuración (una sola vez)
+
+1. Crear una cuenta en <https://resend.com> y generar una **API key** (*API Keys → Create*).
+2. Verificar el dominio `paradigmaseed.com` en Resend (*Domains → Add Domain*) y agregar
+   los registros DNS que indica en el proveedor del dominio. Hasta que esté verificado,
+   Resend solo permite enviar desde `onboarding@resend.dev` y únicamente al email con el
+   que se creó la cuenta de Resend.
+3. En Vercel → proyecto → *Settings → Environment Variables*, agregar:
+
+   | Variable | Valor |
+   |---|---|
+   | `RESEND_API_KEY` | la API key de Resend |
+   | `CONTACT_TO_EMAIL` | `info@paradigmaseed.com` (opcional, es el valor por defecto) |
+   | `CONTACT_FROM_EMAIL` | `Paradigma Seeds <contacto@paradigmaseed.com>` (una vez verificado el dominio) |
+
+4. Volver a desplegar (*Deployments → Redeploy*) para que tome las variables.
+
+### Probar en local
+
+Copiar `.env.example` a `.env`, completar `RESEND_API_KEY` y ejecutar `npm run dev`.
+El servidor de desarrollo sirve también `/api/contacto`, igual que Vercel.
+
+### Protecciones
+
+- Validación de campos en el navegador y en el servidor.
+- Campo oculto *honeypot* contra bots.
+- Límite de 5 envíos cada 10 minutos por IP.
+- El contenido del mensaje se escapa antes de armar el HTML del correo.
 
 ## Datos de contacto
 

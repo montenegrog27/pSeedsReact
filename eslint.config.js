@@ -35,4 +35,9 @@ export default [
       ],
     },
   },
+  {
+    // Código que corre en Node: funciones de Vercel y configuración
+    files: ['api/**/*.js', '*.config.js'],
+    languageOptions: { globals: globals.node },
+  },
 ]
