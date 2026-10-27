@@ -21,7 +21,7 @@ export default function Hero  ()  {
           {/* Sección de imagen */}
           <div className="w-[90%] md:w-1/2 flex justify-center md:justify-end">
             <img src="https://res.cloudinary.com/dsbrnqc5z/image/upload/v1727390896/images/PSsinfondo2_j68epl.png"
-             alt="Descripción de la imagen" 
+             alt="Plantas de cannabis de Paradigma Seeds"
              className="rounded-lg object-contain  w-[85%] h-auto" />
           </div>
         </div>
