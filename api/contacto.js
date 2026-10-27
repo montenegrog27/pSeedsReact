@@ -4,7 +4,8 @@
 // Variables de entorno (Vercel → Settings → Environment Variables):
 //   RESEND_API_KEY      (obligatoria) API key de Resend
 //   CONTACT_TO_EMAIL    destinatario de las consultas (por defecto info@paradigmaseed.com)
-//   CONTACT_FROM_EMAIL  remitente; debe ser de un dominio verificado en Resend
+//   CONTACT_FROM_EMAIL  remitente; debe ser del dominio verificado en Resend
+//                       (paradigmaseeds.com, ej. "Paradigma Seeds <contacto@paradigmaseeds.com>")
 //                       (por defecto "Paradigma Seeds <onboarding@resend.dev>")
 
 const LIMITS = { name: 100, email: 120, phone: 20, message: 2000 };
